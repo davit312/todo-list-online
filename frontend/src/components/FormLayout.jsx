@@ -1,4 +1,4 @@
-export default function (props) {
+export default function FormLayout(props) {
   return (
     <div>
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden m-auto mt-3.5">

@@ -1,4 +1,4 @@
-export default function () {
+export default function Input() {
   return (
     <div className="w-full max-w-sm min-w-[200px]">
       <input

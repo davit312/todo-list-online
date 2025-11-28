@@ -5,7 +5,7 @@ import Submit from './components/Submit';
 
 import Header from './Header';
 
-export default function () {
+export default function Login() {
   return (
     <>
       <Header />

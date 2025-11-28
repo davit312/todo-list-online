@@ -1,3 +1,4 @@
+import Checkbox from './components/Checkbox';
 import './css/App.css';
 
 import Header from './Header';
@@ -7,6 +8,7 @@ function App() {
     <>
       <Header />
       <h1>hello from app.js</h1>
+      <Checkbox />
     </>
   );
 }

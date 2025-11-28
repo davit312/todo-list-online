@@ -1,3 +1,19 @@
+import FormLayout from './components/FormLayout';
+import Input from './components/Input';
+import Password from './components/Password';
+import Submit from './components/Submit';
+
+import Header from './Header';
+
 export default function () {
-  return <h1>login page</h1>;
+  return (
+    <>
+      <Header />
+      <FormLayout>
+        <Input />
+        <Password />
+        <Submit />
+      </FormLayout>
+    </>
+  );
 }

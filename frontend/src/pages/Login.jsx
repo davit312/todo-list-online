@@ -19,8 +19,8 @@ export default function Login() {
         }}
       >
         <Input placeholder="Email" inputName="email" />
-        <Password placeholder="Password" />
-        <Button isdisabled={true}>Login</Button>
+        <Password placeholder="Password" passwordName="password" />
+        <Button>Login</Button>
         <p className="text-center">
           <Link
             class="text-gray-500 text hover:text-gray-700 font-semibold py-2 px-4 rounded border border-gray-500 hover:bg-gray-500 hover:text-white transition duration-300 "

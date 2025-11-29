@@ -9,7 +9,7 @@ export default function Password({ passwordName, placeholder = '' }) {
       <Input
         type={isVisible ? 'text' : 'password'}
         placeholder={placeholder}
-        name={passwordName}
+        inputName={passwordName}
       />
       <button
         type="button"

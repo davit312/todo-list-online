@@ -1,4 +1,4 @@
-export default function Input({ inputName, type = 'text', placeholder }) {
+export default function Input({ inputName = '', type = 'text', placeholder }) {
   return (
     <div className="w-full max-w-sm min-w-[200px]">
       <input
@@ -6,6 +6,7 @@ export default function Input({ inputName, type = 'text', placeholder }) {
         placeholder={placeholder}
         name={inputName}
         type={type}
+        id={inputName !== '' ? `id-${inputName}` : null}
       />
     </div>
   );

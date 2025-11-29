@@ -4,15 +4,19 @@ import Password from '../components/Password';
 import Button from '../components/Button';
 
 import Header from '../components/Header';
-import Checkbox from '../components/Checkbox';
 
 export default function Login() {
   return (
     <>
       <Header />
-      <FormLayout>
-        <Input />
-        <Password />
+      <FormLayout
+        handleOnSubmit={(e) => {
+          console.log('submit trigerred');
+          e.preventDefault();
+        }}
+      >
+        <Input placeholder="Email" />
+        <Password placeholder="Password" />
         <Button>Մուտք</Button>
       </FormLayout>
     </>

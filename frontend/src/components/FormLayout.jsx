@@ -1,4 +1,4 @@
-export default function FormLayout(props) {
+export default function FormLayout({ children }) {
   return (
     <div>
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden m-auto mt-3.5">
@@ -10,7 +10,7 @@ export default function FormLayout(props) {
         {/* <!-- Form Body --> */}
         <div className="p-8 space-y-5">
           <form action="#" method="POST" className="space-y-5">
-            {props.children}
+            {children}
           </form>
         </div>
       </div>

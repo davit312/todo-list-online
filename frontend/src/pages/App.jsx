@@ -1,7 +1,7 @@
-import Checkbox from './components/Checkbox';
-import './css/App.css';
+import Checkbox from '../components/Checkbox';
+import './../css/App.css';
 
-import Header from './Header';
+import Header from '../components/Header';
 
 function App() {
   return (

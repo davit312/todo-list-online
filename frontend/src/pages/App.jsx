@@ -52,7 +52,7 @@ function App() {
                   const uTodo = [...todos];
                   uTodo[i].completed = !uTodo[i].completed;
 
-                  setTodos([...uTodo]);
+                  setTodos(uTodo);
                 }}
               >
                 <span

@@ -13,4 +13,13 @@ q['INSERT_USER'] = `
     VALUES (?, ?, ?)
 `;
 
+q['CREATE_TODO_TABLE'] = `CREATE TABLE todos (
+    id INTEGER PRIMARY KEY,
+    userid INTEGER,
+    task TEXT NOT NULL,
+    complete INTEGER DEFAULT 0,
+    creation_date INTEGER DEFAULT (strftime('%s', 'now')),
+    FOREIGN KEY (userid) REFERENCES users(id)
+);`;
+
 export default q;

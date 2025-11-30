@@ -12,7 +12,7 @@ const Checkbox = ({ children, checkboxName = '', isChecked, isDisabled }) => {
           setChState(!checkedState);
         }}
         type="checkbox"
-        id={checkboxName !== '' ? `id-${checkboxName}` : ''}
+        id={checkboxName !== '' ? `id-${checkboxName}` : null}
         className="
     relative peer shrink-0
     appearance-none w-4 h-4 border-2 border-blue-500 rounded-sm bg-white

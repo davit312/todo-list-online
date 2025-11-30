@@ -5,8 +5,10 @@ const Checkbox = function ({
   checkboxName = '',
   isChecked,
   isDisabled,
+  handleOnChange,
 }) {
   const [checkedState, setChState] = useState(isChecked ?? false);
+
   return (
     <div className="flex gap-2">
       <input
@@ -15,6 +17,7 @@ const Checkbox = function ({
         name={checkboxName}
         onChange={() => {
           setChState(!checkedState);
+          handleOnChange();
         }}
         type="checkbox"
         id={checkboxName !== '' ? `id-${checkboxName}` : null}
@@ -24,10 +27,13 @@ const Checkbox = function ({
     mt-1
     checked:bg-blue-800 checked:border-0"
       />
-      <label htmlFor="some_id">{children}</label>
+      <label htmlFor={checkboxName !== '' ? `id-${checkboxName}` : null}>
+        {children}
+      </label>
       <svg
         onClick={() => {
           setChState(!checkedState);
+          handleOnChange && handleOnChange();
         }}
         className="
       absolute text-white

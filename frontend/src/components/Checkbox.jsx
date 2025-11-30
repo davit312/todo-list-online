@@ -1,6 +1,11 @@
 import { useState } from 'react';
 
-const Checkbox = ({ children, checkboxName = '', isChecked, isDisabled }) => {
+const Checkbox = function ({
+  children,
+  checkboxName = '',
+  isChecked,
+  isDisabled,
+}) {
   const [checkedState, setChState] = useState(isChecked ?? false);
   return (
     <div className="flex gap-2">

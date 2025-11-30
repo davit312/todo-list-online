@@ -12,6 +12,7 @@ q['INSERT_USER'] = `
     INSERT INTO users (fullname, email, password)
     VALUES (?, ?, ?)
 `;
+/***************** */
 
 q['CREATE_TODO_TABLE'] = `CREATE TABLE todos (
     id INTEGER PRIMARY KEY,
@@ -21,5 +22,9 @@ q['CREATE_TODO_TABLE'] = `CREATE TABLE todos (
     creation_date INTEGER DEFAULT (strftime('%s', 'now')),
     FOREIGN KEY (userid) REFERENCES users(id)
 );`;
+
+q['INSERT_TODO'] = ``;
+q['UPDATE_TODO'] = ``;
+q['DELETE_TODO'] = `DELETE FROM todos WHERE id = ?`;
 
 export default q;

@@ -12,6 +12,8 @@ q['INSERT_USER'] = `
     INSERT INTO users (fullname, email, password)
     VALUES (?, ?, ?)
 `;
+q['GET_USER'] = 'SELECT * FROM users WHERE email = ? AND password = ?';
+q['GET_USER_BY_ID'] = 'SELECT * FROM users WHERE id = ?';
 /***************** */
 
 q['CREATE_TODO_TABLE'] = `CREATE TABLE todos (

@@ -1,6 +1,8 @@
 import Header from '../components/Header';
 import Checkbox from '../components/Checkbox';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+
+import { UserContext } from '../contexts/User';
 
 const data = [
   {
@@ -16,13 +18,22 @@ const data = [
 ];
 
 function App() {
+  const user = useContext(UserContext);
   const [todos, setTodos] = useState(data);
+  console.log(user);
   return (
     <>
       <Header />
+      {/* <pre>{Object.keys(user.currentUser)}</pre> */}
       <div className="ml-5 mr-3">
         <h2>
-          <strong>User</strong>'s todo list
+          <strong>{user.fullname}</strong>'s todo list
+          <button
+            onClick={user.logout}
+            className="bg-gray-100 hover:bg-gray-300 text-gray-800 ml-2 mb-1 px-1 border border-gray-400 rounded shadow"
+          >
+            Logout
+          </button>
         </h2>
         <div className="flex justify-between">
           <input

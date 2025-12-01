@@ -4,6 +4,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import './css/index.css';
 
+import UserProvider from './contexts/userProvider.jsx';
+
 import App from './pages/App.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -11,11 +13,19 @@ import Register from './pages/Register.jsx';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: (
+      <UserProvider>
+        <App />
+      </UserProvider>
+    ),
   },
   {
     path: '/login',
-    element: <Login />,
+    element: (
+      <UserProvider>
+        <Login />
+      </UserProvider>
+    ),
   },
   {
     path: '/register',
@@ -26,7 +36,6 @@ const router = createBrowserRouter([
     element: <h1>404 Not Found</h1>,
   },
 ]);
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <RouterProvider router={router} />

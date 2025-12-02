@@ -13,10 +13,11 @@ export default function UserProvider({ children }) {
     currentUser: undefined,
   };
 
+  const token = localStorage.getItem("userToken");
+
   // const login = function () {};
 
   const logout = function () {
-    const token = localStorage.getItem("userToken");
     window.localStorage.removeItem("userToken");
     const newUser = { ...user, currentUser: undefined };
     setCurrentUser(newUser);
@@ -43,8 +44,6 @@ export default function UserProvider({ children }) {
     console.log("updated", user);
   };
 
-  const token = window.localStorage.getItem("userToken");
-
   const [user, setCurrentUser] = useState(DefaultUser);
 
   useEffect(() => {
@@ -60,7 +59,7 @@ export default function UserProvider({ children }) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            token: token,
+            token,
           }),
         })
           .then((res) => res.json())
@@ -88,12 +87,13 @@ export default function UserProvider({ children }) {
         }
       }
     }
-  }, [navigate, token, logout, user]);
+  }, [navigate, token, user]);
 
   const exportList = {
     user: user.currentUser,
     putCurrentUser,
     logout,
+    token,
   };
 
   return (

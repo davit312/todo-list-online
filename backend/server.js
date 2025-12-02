@@ -158,12 +158,110 @@ apiRouter.post("/logout", (req, res) => {
 });
 
 // ToDo endpoints
-apiRouter.post("/todo/add", (req, res) => {});
-apiRouter.get("/todo/get-all", (req, res) => {});
-apiRouter.delete("/todo/delete/:todoid", (req, res) => {
-  const params = req.params;
-  const todoid = parems.todoid;
+apiRouter.post("/todo/add", (req, res) => {
+  const token = req.headers?.["x-auth"];
+  const task = req.body?.task;
+
+  if (!token) {
+    return res.status(401).send({ error: true, message: "Token not provided" });
+  }
+
+  const userId = tokens.get(token);
+
+  if (!userId) {
+    return res
+      .status(401)
+      .send({ error: true, message: "Invalid or expired token" });
+  }
+
+  if (!task) {
+    return res.status(400).send({ error: true, message: "Task is required" });
+  }
+
+  db.run(queries["INSERT_TODO"], [userId, task], function (err) {
+    if (err) {
+      console.error("Error inserting todo:", err.message);
+      return res.status(500).send({ error: true, message: err.message });
+    }
+
+    // The 'this.lastID' property holds the row ID of the last row inserted
+    const newTodoId = this.lastID;
+    // Respond with the newly created todo item's details
+    return res.status(201).send({
+      error: false,
+      message: "ToDo added successfully",
+      todo: {
+        id: newTodoId,
+        userid: userId,
+        task: task,
+        complete: 0,
+      },
+    });
+  });
 });
+
+apiRouter.get("/todo/get-all", (req, res) => {
+  const token = req.headers?.["x-auth"];
+
+  if (!token) {
+    return res.status(401).send({ error: true, message: "Token not provided" });
+  }
+
+  const userId = tokens.get(token);
+
+  if (!userId) {
+    return res
+      .status(401)
+      .send({ error: true, message: "Invalid or expired token" });
+  }
+
+  // Use the GET_USER_TODOS query to fetch all todos for the given userId
+  db.all(queries["GET_USER_TODOS"], [userId], (err, rows) => {
+    if (err) {
+      console.error("Error fetching todos:", err.message);
+      return res.status(500).send({ error: true, message: err.message });
+    }
+
+    // rows will be an array of all todo objects for the user (or an empty array if none)
+    return res.status(200).send({
+      error: false,
+      todos: rows,
+    });
+  });
+});
+// Assume 'apiRouter' is an express.Router() instance
+// Assume 'db' is your SQLite database connection object
+
+apiRouter.delete("/todo/delete/:todoid", (req, res) => {
+  const todoId = req.params.todoid;
+
+  db.run(queries["DELETE_TODO"], [todoId], function (err) {
+    if (err) {
+      console.error(`Error deleting todo ID ${todoId}:`, err.message);
+      // Send a 500 status code for server error
+      return res.status(500).json({
+        error: true,
+        message: err.message,
+      });
+    }
+
+    // Check how many rows were affected by the operation
+    if (this.changes === 0) {
+      // Send a 404 status code if no row matched the ID
+      return res.status(404).json({
+        error: true,
+        message: `Todo item with ID ${todoId} not found.`,
+      });
+    }
+
+    res.json({
+      error: false,
+      message: "Todo item deleted successfully.",
+      deletedID: todoId,
+    });
+  });
+});
+
 apiRouter.post("/todo/update/:todoid", (req, res) => {
   const params = req.params;
   const todoid = parems.todoid;

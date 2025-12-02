@@ -18,18 +18,17 @@ const data = [
 ];
 
 function App() {
-  const user = useContext(UserContext);
+  const { user, logout } = useContext(UserContext);
   const [todos, setTodos] = useState(data);
-  console.log(user);
+
   return (
     <>
       <Header />
-      {/* <pre>{Object.keys(user.currentUser)}</pre> */}
       <div className="ml-5 mr-3">
         <h2>
-          <strong>{user.fullname}</strong>'s todo list
+          <strong>{user?.fullname}</strong>'s todo list
           <button
-            onClick={user.logout}
+            onClick={logout}
             className="bg-gray-100 hover:bg-gray-300 text-gray-800 ml-2 mb-1 px-1 border border-gray-400 rounded shadow"
           >
             Logout

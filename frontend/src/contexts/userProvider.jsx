@@ -64,7 +64,7 @@ export default function UserProvider({ children }) {
   }, [navigate, token, user]);
 
   const exportList = {
-    user,
+    user: user.currentUser,
     putCurrentUser,
     logout,
   };

@@ -44,14 +44,13 @@ export default function Register() {
       currentErrors.push('Incorrect email form, use "user@domain.com"');
     }
 
-    if (!password?.length || password.lengh < 6) {
+    if (!password?.length || password.length < 6) {
       currentErrors.push("Password must have at least 6 symbols");
     }
 
     if (password !== repeatPassword) {
       currentErrors.push("Passwords don't match");
     }
-
     if (currentErrors.length > 0) {
       setErrors(currentErrors);
       return;
@@ -75,13 +74,10 @@ export default function Register() {
           currentErrors.push(`Registragion failed: ${json.message}`);
         } else {
           if (json.user.id) {
-            console.log("with id");
-            window.localStorage.setItem("userToken", json.user.token);
+            window.localStorage.setItem("userToken", json.token);
             putCurrentUser(json.user);
             navigator("/", { replace: true });
           } else {
-            console.log("no id");
-            console.log("success");
             setRegistrationSuccess(true);
           }
         }

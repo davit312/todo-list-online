@@ -8,6 +8,7 @@ import queries from "./queries.js";
 const tokens = new Map();
 
 const DB_FILE = "../sqlite/app.db";
+const PUBLIC_FOLDER = "../frontend/dist";
 
 let db = new sqlite3.Database(DB_FILE, (err) => {
   if (err) {
@@ -33,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // 3. --- STATIC FILE SERVING ---
 // All requests that do not match an an API route will look in the 'public' directory first.
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, PUBLIC_FOLDER)));
 
 // --- API Router Setup ---
 const apiRouter = express.Router();
@@ -156,52 +157,18 @@ apiRouter.post("/logout", (req, res) => {
   return res.status(200).send({ error: false });
 });
 
+// ToDo endpoints
+
 app.use("/api", apiRouter);
-//--------------------------------------------
-//-----------------------------------------
-//-------------------------------------------
 
-// We create a separate router for all API endpoints to keep them organized.
-
-/**
- * @route GET /api/status
- * @description A test route to check API health.
- */
-apiRouter.get("/status", (req, res) => {
-  res.status(200).json({
-    message: "API is running successfully!",
-    service: "Express API",
-    api_version: "1.0",
-  });
+app.get("/{*splat}", (req, res) => {
+  res.sendFile(path.join(__dirname, PUBLIC_FOLDER, "index.html"));
 });
-
-/**
- * @route POST /api/data
- * @description Original example route, now under the API router.
- */
-apiRouter.post("/data", (req, res) => {
-  // Check if the request body contains data
-  if (Object.keys(req.body).length === 0) {
-    return res.status(400).json({ error: "Request body cannot be empty." });
-  }
-
-  console.log("Received data:", req.body);
-
-  // Respond with the data received and a 201 Created status
-  res.status(201).json({
-    message: "Data received successfully!",
-    data: req.body,
-    processed_at: new Date().toISOString(),
-  });
-});
-
-// --- ROUTE MOUNTING ---
-// All routes defined in apiRouter (e.g., '/status', '/data') will be prefixed with '/api'
 
 // --- Server Startup ---
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
-  console.log("Static files served from: /public");
+  console.log(`Static files served from: ${PUBLIC_FOLDER}`);
   console.log("API endpoints are available under: /api");
   console.log("Running with ES Module Syntax!");
 });

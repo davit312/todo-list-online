@@ -1,11 +1,31 @@
-import FormLayout from '../components/FormLayout';
-import Input from '../components/Input';
-import Password from '../components/Password';
-import Button from '../components/Button';
+import FormLayout from "../components/FormLayout";
+import Input from "../components/Input";
+import Password from "../components/Password";
+import Button from "../components/Button";
 
-import Header from '../components/Header';
-import Checkbox from '../components/Checkbox';
+import Header from "../components/Header";
+import Checkbox from "../components/Checkbox";
 export default function Register() {
+  const handleOnSubmit = function (e) {
+    e.preventDefault();
+
+    const fullname = document.querySelector("input[name=fullname]");
+    const email = document.querySelector("input[name=email]");
+    const password = document.querySelector("input[name=password]");
+    const repeatPassword = document.querySelector(
+      "input[name=repeat-password]"
+    );
+    const autoLogin = document.querySelector("input[name=auto-login]");
+
+    console.log(
+      fullname.value,
+      email.value,
+      password.value,
+      repeatPassword.value,
+      autoLogin.value
+    );
+  };
+
   return (
     <>
       <Header />
@@ -20,15 +40,15 @@ export default function Register() {
             available. Register to join our system
           </span>
         }
-        handleOnSubmit={(e) => {
-          console.log('submit trigerred');
-          e.preventDefault();
-        }}
+        handleOnSubmit={handleOnSubmit}
       >
         <Input placeholder="Fullname" inputName="fullname" />
         <Input placeholder="Email" inputName="email" />
-        <Password placeholder="Password" inputName="password" />
-        <Password placeholder="Repeat password" inputName="repeat-password" />
+        <Password placeholder="Password" passwordName="password" />
+        <Password
+          placeholder="Repeat password"
+          passwordName="repeat-password"
+        />
         <div className="flex">
           <Checkbox checkboxName="auto-login" isChecked={true} />
           <p>
@@ -37,7 +57,6 @@ export default function Register() {
         </div>
 
         <Button>Register</Button>
-        <link rel="stylesheet" href="" />
       </FormLayout>
     </>
   );

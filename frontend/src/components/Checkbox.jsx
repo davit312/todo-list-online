@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 const Checkbox = function ({
   children,
-  checkboxName = '',
+  checkboxName = "",
   isChecked,
   isDisabled,
   handleOnChange,
@@ -14,20 +14,21 @@ const Checkbox = function ({
       <input
         disabled={isDisabled}
         checked={checkedState}
+        value={checkedState ? "on" : ""}
         name={checkboxName}
         onChange={() => {
           setChState(!checkedState);
-          handleOnChange();
+          handleOnChange && handleOnChange();
         }}
         type="checkbox"
-        id={checkboxName !== '' ? `id-${checkboxName}` : null}
+        id={checkboxName !== "" ? `id-${checkboxName}` : null}
         className="
     relative peer shrink-0
     appearance-none w-4 h-4 border-2 border-blue-500 rounded-sm bg-white
     mt-1
     checked:bg-blue-800 checked:border-0"
       />
-      <label htmlFor={checkboxName !== '' ? `id-${checkboxName}` : null}>
+      <label htmlFor={checkboxName !== "" ? `id-${checkboxName}` : null}>
         {children}
       </label>
       <svg

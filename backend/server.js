@@ -41,7 +41,6 @@ app.use(express.json());
 
 apiRouter.post('/login', async (req, res) => {
   if (req.body?.token) {
-    console.log(tokens.get(req.body.token));
     const id = tokens.get(req.body.token);
     db.get(queries['GET_USER_BY_ID'], [id], (err, row) => {
       if (err) {
@@ -75,9 +74,65 @@ apiRouter.post('/login', async (req, res) => {
   }
 });
 
-apiRouter.post('/signup', (req, res) => {});
+apiRouter.post('/signup', (req, res) => {
+  const { username, email, password } = req.body;
 
-apiRouter.get('/signout', (req, res) => {});
+  if (!username || !email || !password) {
+    return res.status(400).send({ error: true, message: 'Missing required fields: username, email, or password.' });
+  }
+
+  // 1. Check if a user with this email already exists
+  db.get(queries['GET_USER_BY_ID'], [email], (err, row) => {
+    if (err) {
+      return res.status(500).send({ error: true, message: err.message });
+    }
+
+    if (row) {
+      // User with this email already exists
+      return res.status(409).send({ error: true, message: 'A user with this email already exists.' });
+    }
+
+    // 2. Insert the new user into the database
+    db.run(queries['INSERT_USER'], [username, email, password], function (insertErr) {
+      if (insertErr) {
+        // Handle database insertion error
+        console.error('User registration error:', insertErr.message);
+        return res.status(500).send({ error: true, message: insertErr.message });
+      }
+
+      // The 'this.lastID' property holds the row ID of the last row inserted
+      const newUserId = this.lastID;
+
+      // 3. Generate a token for immediate login
+      // Reusing your simple token generation logic from /login
+      const token = password.slice(0, 3) + Date.now() + email.split('@').at(0);
+      tokens.set(token, newUserId);
+
+      // 4. Respond with success message, user details, and the token
+      return res.status(201).send({
+        error: false,
+        message: 'User registered successfully',
+        user: { id: newUserId, username, email, token: token },
+      });
+    });
+  });
+});
+
+apiRouter.post('/logout', (req, res) => {
+  if(!req.body?.token){
+    return res.status(400).send({error: true, message: 'No token provided'})
+  }
+
+  if(req.headers?.['x-auth'] !== req.body.token){
+    return res.status(401).send({error: true, message: 'Not authorized'})
+  }
+  if(tokens.has(req.body.token)) {
+    tokens.delete(req.body.token)
+  }
+  console.log('Logout success')
+  return res.status(200).send({error: false})
+
+});
 
 app.use('/api', apiRouter);
 //--------------------------------------------

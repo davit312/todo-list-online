@@ -12,7 +12,7 @@ import { UserContext } from '../contexts/User';
 
 export default function Login() {
   const { user, putCurrentUser } = useContext(UserContext);
-  const [currentUser, setCurrentUser] = useState(user.currentUser);
+  const [currentUser, setCurrentUser] = useState(user);
   const [errors, setErrors] = useState([]);
   const handleOnLogin = (e) => {
     const currentErrors = [];

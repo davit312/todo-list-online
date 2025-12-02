@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { UserContext } from './User';
 
-const allowForUsers = ['/'];
+const allowedForUsers = ['/'];
+const notAllowedForUsers = ['/login', '/register'];
 
 export default function UserProvider({ children }) {
   const navigate = useNavigate();
@@ -33,30 +34,41 @@ export default function UserProvider({ children }) {
 
   useEffect(() => {
     const pathname = window.location.pathname;
-    if (allowForUsers.includes(pathname)) {
-      if (!user.currentUser?.id) {
-        if (token) {
-          const body = {
-            token: token,
-          };
+    if (!user.currentUser?.id) {
+      if (token) {
+        let newUser = {};
 
-          fetch('http://localhost:3000/api/login', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body),
+        fetch('http://localhost:3000/api/login', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        })
+          .then((res) => res.json())
+          .then((json) => {
+            if (json.error) {
+              return navigate('/login', { replace: true });
+            }
+            newUser = { ...user, currentUser: json.user };
+            setCurrentUser(newUser);
           })
-            .then((res) => res.json())
-            .then((json) => {
-              if (json.error) {
-                return navigate('/login', { replace: true });
-              }
-              const newUser = { ...user, currentUser: json.user };
-              setCurrentUser(newUser);
-            });
-        } else {
+          .finally(() => {
+            if (allowedForUsers.includes(pathname) && !newUser.currentUser.id) {
+              navigate('/login', { replace: true });
+            }
+            if (
+              notAllowedForUsers.includes(pathname) &&
+              newUser.currentUser.id
+            ) {
+              navigate('/', { replace: true });
+            }
+          });
+      } else {
+        if (allowedForUsers.includes(pathname)) {
           navigate('/login', { replace: true });
         }
       }

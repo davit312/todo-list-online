@@ -158,6 +158,16 @@ apiRouter.post("/logout", (req, res) => {
 });
 
 // ToDo endpoints
+apiRouter.post("/todo/add", (req, res) => {});
+apiRouter.get("/todo/get-all", (req, res) => {});
+apiRouter.delete("/todo/delete/:todoid", (req, res) => {
+  const params = req.params;
+  const todoid = parems.todoid;
+});
+apiRouter.post("/todo/update/:todoid", (req, res) => {
+  const params = req.params;
+  const todoid = parems.todoid;
+});
 
 app.use("/api", apiRouter);
 

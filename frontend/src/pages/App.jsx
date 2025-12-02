@@ -1,25 +1,14 @@
-import Header from '../components/Header';
-import Checkbox from '../components/Checkbox';
-import { useState, useContext } from 'react';
+import Header from "../components/Header";
+import Checkbox from "../components/Checkbox";
+import { useState, useContext, useEffect } from "react";
 
-import { UserContext } from '../contexts/User';
-
-const data = [
-  {
-    id: 1,
-    task: 'Learn react',
-    completed: true,
-  },
-  {
-    id: 2,
-    task: 'Create login page',
-    completed: false,
-  },
-];
+import { UserContext } from "../contexts/User";
 
 function App() {
   const { user, logout } = useContext(UserContext);
-  const [todos, setTodos] = useState(data);
+  const [todos, setTodos] = useState([]);
+
+  useEffect(function () {}, [user]);
 
   return (
     <>
@@ -38,7 +27,7 @@ function App() {
           <input
             className="bg-gray-50 focus:bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
             placeholder="New todo..."
-            style={{ width: '80%' }}
+            style={{ width: "80%" }}
             type="text"
             name=""
           />
@@ -66,14 +55,14 @@ function App() {
                 }}
               >
                 <span
-                  className={todo.completed === true ? 'line-through' : null}
+                  className={todo.completed === true ? "line-through" : null}
                 >
                   {todo.task}
                 </span>
               </Checkbox>
               <button
                 className="bg-gray-100 hover:bg-gray-300 text-gray-800 font-semibold "
-                style={{ marginLeft: 'auto' }}
+                style={{ marginLeft: "auto" }}
               >
                 Delete
               </button>

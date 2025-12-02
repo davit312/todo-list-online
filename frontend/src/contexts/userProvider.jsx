@@ -88,7 +88,7 @@ export default function UserProvider({ children }) {
         }
       }
     }
-  }, [navigate, token, user]);
+  }, [navigate, token, logout, user]);
 
   const exportList = {
     user: user.currentUser,

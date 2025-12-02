@@ -1,14 +1,14 @@
-import { useContext, useState } from 'react';
+import { useContext, useState } from "react";
 
-import { Link, Navigate } from 'react-router';
+import { Link, Navigate } from "react-router";
 
-import FormLayout from '../components/FormLayout';
-import Input from '../components/Input';
-import Password from '../components/Password';
-import Button from '../components/Button';
+import FormLayout from "../components/FormLayout";
+import Input from "../components/Input";
+import Password from "../components/Password";
+import Button from "../components/Button";
 
-import Header from '../components/Header';
-import { UserContext } from '../contexts/User';
+import Header from "../components/Header";
+import { UserContext } from "../contexts/User";
 
 export default function Login() {
   const { user, putCurrentUser } = useContext(UserContext);
@@ -20,26 +20,26 @@ export default function Login() {
     e.preventDefault();
 
     const email = document
-      .querySelector('#id-email')
+      .querySelector("#id-email")
       .value?.trim()
       .toLowerCase()
       .match(/.+@.+\..+/)
       ?.at(0);
 
-    const password = document.querySelector('#id-password').value;
+    const password = document.querySelector("#id-password").value;
 
     if (!email) {
       currentErrors.push('Incorrect email form, use "user@domain.com"');
     }
-    if (!password?.length || password.lengh < 4) {
-      currentErrors.push('Password must have at least 4 symbols');
+    if (!password?.length || password.lengh < 6) {
+      currentErrors.push("Password must have at least 6 symbols");
     }
 
-    fetch('http://localhost:3000/api/login', {
-      method: 'POST',
+    fetch("http://localhost:3000/api/login", {
+      method: "POST",
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         email: email,
@@ -48,12 +48,12 @@ export default function Login() {
     })
       .then((res) => res.json())
       .then((data) => {
-        window.localStorage.setItem('userToken', data.user.token);
+        window.localStorage.setItem("userToken", data.user.token);
         putCurrentUser(data.user);
         setCurrentUser(data.user);
       })
       .catch(() => {
-        currentErrors.push('Login failed');
+        currentErrors.push("Login failed");
         setErrors(currentErrors);
       })
       .finally(() => {
@@ -63,7 +63,7 @@ export default function Login() {
 
   return (
     <>
-      {currentUser?.id ? <Navigate to="/" /> : ''}
+      {currentUser?.id ? <Navigate to="/" /> : ""}
       <Header />
       <FormLayout
         description="To Do gives you focus, from work to play. Enter your credentials to view you todo list"
@@ -80,7 +80,7 @@ export default function Login() {
             </ul>
           </div>
         ) : (
-          ''
+          ""
         )}
         <Button onClick={handleOnLogin}>Login</Button>
         <p className="text-center">

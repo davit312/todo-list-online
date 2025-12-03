@@ -150,14 +150,20 @@ function App() {
           return (
             <li
               key={todo.id}
-              className="flex text-gray-700 mt-2 pl-8 pr-6 pt-2 pb-2 border"
+              className="flex text-gray-700 
+              mt-2 pl-8 pr-6 pt-2 pb-2 border hover:bg-gray-100"
             >
               <Checkbox
                 isChecked={todo.complete === 1}
                 checkboxName={`complete-${todo.id}`}
                 handleOnChange={() => handleOnConleteChange(todo, i)}
               >
-                <span className={todo.complete === 1 ? "line-through" : null}>
+                <span
+                  className={
+                    "hover:cursor-pointer  " +
+                    (todo.complete === 1 ? "line-through" : null)
+                  }
+                >
                   {todo.task}
                 </span>
               </Checkbox>

@@ -229,13 +229,24 @@ apiRouter.get("/todo/get-all", (req, res) => {
     });
   });
 });
-// Assume 'apiRouter' is an express.Router() instance
-// Assume 'db' is your SQLite database connection object
 
 apiRouter.delete("/todo/delete/:todoid", (req, res) => {
   const todoId = req.params.todoid;
+  const token = req.headers?.["x-auth"];
 
-  db.run(queries["DELETE_TODO"], [todoId], function (err) {
+  if (!token) {
+    return res.status(401).send({ error: true, message: "Token not provided" });
+  }
+
+  const userId = tokens.get(token);
+
+  if (!userId) {
+    return res
+      .status(401)
+      .send({ error: true, message: "Invalid or expired token" });
+  }
+
+  db.run(queries["DELETE_TODO"], [todoId, userId], function (err) {
     if (err) {
       console.error(`Error deleting todo ID ${todoId}:`, err.message);
       // Send a 500 status code for server error
@@ -263,8 +274,40 @@ apiRouter.delete("/todo/delete/:todoid", (req, res) => {
 });
 
 apiRouter.post("/todo/update/:todoid", (req, res) => {
-  const params = req.params;
-  const todoid = parems.todoid;
+  const todoid = req.params?.todoid;
+  const token = req.headers?.["x-auth"];
+
+  if (!token) {
+    return res.status(401).send({ error: true, message: "Token not provided" });
+  }
+
+  const userId = tokens.get(token);
+
+  if (!userId) {
+    return res
+      .status(401)
+      .send({ error: true, message: "Invalid or expired token" });
+  }
+
+  const todo = req.body.todo;
+  if (todo?.id !== Number(todoid)) {
+    return res
+      .status(400)
+      .send({ error: true, message: "Request is not correct" });
+  }
+  console.dir(todo);
+  db.run(
+    queries["UPDATE_TODO"],
+    [todo.task, todo.complete, todo.id, userId],
+    function (err) {
+      if (err) {
+        return res.status(500).send({ error: true, message: err.message });
+      }
+      return res
+        .status(200)
+        .send({ error: false, message: "Todo updated successfully" });
+    }
+  );
 });
 
 app.use("/api", apiRouter);

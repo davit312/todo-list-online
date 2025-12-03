@@ -7,6 +7,7 @@ import { UserContext } from "../contexts/User";
 function App() {
   const { user, logout, token } = useContext(UserContext);
   const [todos, setTodos] = useState([]);
+
   useEffect(
     function () {
       fetch("http://localhost:3000/api/todo/get-all", {
@@ -77,13 +78,39 @@ function App() {
       .catch(() => {});
   };
 
-  const handleOnKeyDown = function (e) {
+  const handleAddInputOnKeyDown = function (e) {
     if (e.key === "Enter") {
       if (!e.target.value) {
         return;
       }
       handleAddOnclick();
     }
+  };
+
+  const handleOnConleteChange = function (todo, i) {
+    const uTodo = { ...todo };
+    uTodo.complete = Number(!uTodo.complete);
+
+    fetch(`http://localhost:3000/api/todo/update/${todo.id}`, {
+      method: "POST",
+      headers: {
+        "x-auth": token,
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        todo: uTodo,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          return;
+        }
+        const uToddoList = todos.slice();
+        uToddoList[i] = uTodo;
+        setTodos(uToddoList);
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
@@ -102,7 +129,7 @@ function App() {
         <div className="flex justify-between">
           <input
             className="bg-gray-50 focus:bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-            onKeyDown={handleOnKeyDown}
+            onKeyDown={handleAddInputOnKeyDown}
             id="new-task"
             placeholder="New todo..."
             style={{ width: "80%" }}
@@ -126,18 +153,11 @@ function App() {
               className="flex text-gray-700 mt-2 pl-8 pr-6 pt-2 pb-2 border"
             >
               <Checkbox
-                isChecked={todo.completed}
-                checkboxName={`complit-${todo.id}`}
-                handleOnChange={() => {
-                  const uTodo = [...todos];
-                  uTodo[i].completed = !uTodo[i].completed;
-
-                  setTodos(uTodo);
-                }}
+                isChecked={todo.complete === 1}
+                checkboxName={`complete-${todo.id}`}
+                handleOnChange={() => handleOnConleteChange(todo, i)}
               >
-                <span
-                  className={todo.completed === true ? "line-through" : null}
-                >
+                <span className={todo.complete === 1 ? "line-through" : null}>
                   {todo.task}
                 </span>
               </Checkbox>

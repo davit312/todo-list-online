@@ -26,11 +26,13 @@ q["CREATE_TODO_TABLE"] = `CREATE TABLE todos (
 )`;
 
 q["GET_TODO"] = `SELECT * FROM todos WHERE id = ?`;
-q[
-  "GET_USER_TODOS"
-] = `SELECT * FROM todos WHERE userid = ? ORDER BY creation_date DESC`;
+q["GET_USER_TODOS"] = `SELECT * FROM todos 
+    WHERE userid = ? ORDER BY creation_date DESC`;
 q["INSERT_TODO"] = `INSERT INTO todos (userid, task) VALUES (?, ?)`;
-q["UPDATE_TODO"] = `UPDATE todos SET task = ?, complete = ? WHERE id = ?`;
-q["DELETE_TODO"] = `DELETE FROM todos WHERE id = ?`;
+
+q["UPDATE_TODO"] = `UPDATE todos SET task = ?, complete = ? 
+    WHERE id = ? and userid = ?`;
+
+q["DELETE_TODO"] = `DELETE FROM todos WHERE id = ? and userid = ?`;
 
 export default q;

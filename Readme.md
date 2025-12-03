@@ -19,7 +19,7 @@ cd todo-list-online/backend
 node server.sh
 ```
 
-## Using docker
+## Run in docker
 
 ```bash
 cd todo-list-online

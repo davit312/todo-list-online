@@ -18,3 +18,16 @@ node init.js
 cd todo-list-online/backend
 node server.sh
 ```
+
+## Using docker
+
+```bash
+cd todo-list-online
+docker run --rm -t -v "$PWD:/app" -w "/app" node:lts bash install.sh
+
+docker run --restart always \
+     --name todo-list-online \
+     -d -v "$PWD:/app" -w "/app/backend" \
+     -p 3000:3000 \
+      node:lts node server.js
+```

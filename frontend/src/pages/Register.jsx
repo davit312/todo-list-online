@@ -56,7 +56,7 @@ export default function Register() {
       return;
     }
 
-    fetch("http://localhost:3000/api/register", {
+    fetch("/api/register", {
       method: "POST",
       body: JSON.stringify({
         fullname,

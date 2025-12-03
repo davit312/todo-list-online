@@ -35,7 +35,7 @@ export default function Login() {
       currentErrors.push("Password must have at least 6 symbols");
     }
 
-    fetch("http://localhost:3000/api/login", {
+    fetch("/api/login", {
       method: "POST",
       headers: {
         Accept: "application/json",

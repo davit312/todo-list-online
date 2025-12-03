@@ -10,7 +10,7 @@ function App() {
 
   useEffect(
     function () {
-      fetch("http://localhost:3000/api/todo/get-all", {
+      fetch("/api/todo/get-all", {
         method: "GET",
         headers: {
           "x-auth": token,
@@ -28,7 +28,7 @@ function App() {
     const task = taskEL.value;
     if (!task?.length) return;
 
-    fetch("http://localhost:3000/api/todo/add", {
+    fetch("/api/todo/add", {
       method: "POST",
       body: JSON.stringify({
         task,
@@ -55,7 +55,7 @@ function App() {
   };
 
   const handleDeleteClick = function (todo) {
-    fetch(`http://localhost:3000/api/todo/delete/${todo.id}`, {
+    fetch(`/api/todo/delete/${todo.id}`, {
       method: "DELETE",
       headers: {
         "x-auth": token,
@@ -91,7 +91,7 @@ function App() {
     const uTodo = { ...todo };
     uTodo.complete = Number(!uTodo.complete);
 
-    fetch(`http://localhost:3000/api/todo/update/${todo.id}`, {
+    fetch(`/api/todo/update/${todo.id}`, {
       method: "POST",
       headers: {
         "x-auth": token,

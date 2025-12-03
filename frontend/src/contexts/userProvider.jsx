@@ -21,7 +21,7 @@ export default function UserProvider({ children }) {
     window.localStorage.removeItem("userToken");
     const newUser = { ...user, currentUser: undefined };
     setCurrentUser(newUser);
-    fetch("http://localhost:3000/api/logout", {
+    fetch("/api/logout", {
       method: "POST",
       body: JSON.stringify({ token: token }),
       headers: {
@@ -52,7 +52,7 @@ export default function UserProvider({ children }) {
       if (token) {
         let newUser = {};
 
-        fetch("http://localhost:3000/api/login", {
+        fetch("/api/login", {
           method: "POST",
           headers: {
             Accept: "application/json",

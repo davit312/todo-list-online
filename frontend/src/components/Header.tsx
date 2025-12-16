@@ -1,10 +1,10 @@
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { Link } from "react-router-dom";
+import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 
 export default function Header() {
   return (
     <AppBar position="static" sx={{ bgcolor: "#3a528e" }}>
-      {/* Toolbar organizes the content horizontally */}
       <Toolbar>
         <Typography
           variant="h6"
@@ -18,12 +18,15 @@ export default function Header() {
           </Link>
         </Typography>
 
-        {/* Navigation Links */}
         <Box sx={{ display: "flex", gap: 2 }}>
-          <Button variant="contained" color="success">
-            REISTER
-          </Button>
-          <Button color="inherit">LOGIN</Button>
+          <>
+            <Button variant="contained" color="success">
+              Register
+            </Button>
+            <Button color="inherit" startIcon={<LoginOutlinedIcon />}>
+              Login
+            </Button>
+          </>
         </Box>
       </Toolbar>
     </AppBar>

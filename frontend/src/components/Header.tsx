@@ -1,8 +1,7 @@
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import { Link } from "react-router-dom";
-import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
-import BasicPopover from "../ui/UserIcon";
-const gefal = () => false;
+import HeaderAccount from "../features/user/HeaderAccount";
+
 export default function Header() {
   return (
     <AppBar position="static" sx={{ bgcolor: "#3a528e" }}>
@@ -20,20 +19,7 @@ export default function Header() {
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
-          {gefal() ? (
-            <>
-              <Button variant="contained" color="success">
-                Register
-              </Button>
-              <Button color="inherit" startIcon={<LoginOutlinedIcon />}>
-                Login
-              </Button>
-            </>
-          ) : (
-            <>
-              <BasicPopover />
-            </>
-          )}
+          <HeaderAccount />
         </Box>
       </Toolbar>
     </AppBar>

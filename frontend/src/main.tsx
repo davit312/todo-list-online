@@ -1,6 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Provider } from "react-redux";
+
+import store from "./store";
 
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -12,6 +15,8 @@ import BaseLayout from "./BaseLayout.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import ErrorPage from "./pages/ErrorPage.tsx";
 import Todo from "./pages/Todo.tsx";
+import Login from "./pages/Login.tsx";
+import Register from "./pages/Register.tsx";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +29,14 @@ const router = createBrowserRouter([
       {
         path: "app",
         Component: Todo,
+      },
+      {
+        path: "login",
+        Component: Login,
+      },
+      {
+        path: "register",
+        Component: Register,
       },
       {
         path: "*",
@@ -39,6 +52,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>
 );

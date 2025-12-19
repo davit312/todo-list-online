@@ -12,10 +12,9 @@ import {
   Paper,
 } from "@mui/material";
 import { Logout } from "@mui/icons-material";
+import type { User } from "../types/user";
 
-const USERNAME = "Davit Babayan";
-
-export default function UserIcon() {
+export default function UserIcon({ user }: { user: User }) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -38,7 +37,7 @@ export default function UserIcon() {
         aria-describedby={id}
         onClick={handleClick}
       >
-        <Avatar {...stringAvatarProps(USERNAME)} />
+        <Avatar {...stringAvatarProps(user.fullname)} />
       </span>
       <Popover
         id={id}
@@ -52,7 +51,7 @@ export default function UserIcon() {
       >
         <Paper sx={{ maxWidth: "100%" }}>
           <Typography sx={{ paddingX: 5, pt: 2, pb: 1 }}>
-            <strong>{USERNAME}</strong>
+            <strong>{user.fullname}</strong>
           </Typography>
           <Divider />
           <MenuList>

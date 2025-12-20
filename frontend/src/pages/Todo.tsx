@@ -87,7 +87,10 @@ export default function Todo() {
                 <ListItemIcon>
                   <Checkbox checked={item.done} tabIndex={-1} disableRipple />
                 </ListItemIcon>
-                <ListItemText primary={`${item.task}`} />
+                <ListItemText
+                  style={{ textDecoration: item.done ? "line-through" : "" }}
+                  primary={`${item.task}`}
+                />
               </ListItemButton>
               {index < arr.length - 1 ? <Divider /> : null}
             </ListItem>

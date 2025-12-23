@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { CssBaseline, Box } from "@mui/material";
+import RouteGuard from "./components/RouteGuard";
 
 function BaseLayout() {
   return (
@@ -17,7 +18,9 @@ function BaseLayout() {
         <Header />
 
         <Box component="main" sx={{ flexGrow: 1 }}>
-          <Outlet />
+          <RouteGuard>
+            <Outlet />
+          </RouteGuard>
         </Box>
 
         <Footer />

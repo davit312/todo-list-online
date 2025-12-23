@@ -3,6 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from 'generated/prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 
+const noPassword = {
+  password: true,
+};
+
 @Injectable()
 export class UsersService {
   constructor(private readonly databaseService: DatabaseService) {}
@@ -10,17 +14,29 @@ export class UsersService {
   async create(createUserDto: Prisma.UserCreateInput) {
     return this.databaseService.user.create({
       data: createUserDto,
+      omit: noPassword,
     });
   }
 
   async findAll() {
-    return this.databaseService.user.findMany();
+    return this.databaseService.user.findMany({
+      omit: noPassword,
+    });
   }
 
   async findOne(id: number) {
     return this.databaseService.user.findUnique({
       where: {
         id,
+      },
+      omit: noPassword,
+    });
+  }
+
+  async findByEmail(email: string) {
+    return this.databaseService.user.findUnique({
+      where: {
+        email,
       },
     });
   }
@@ -31,6 +47,7 @@ export class UsersService {
         id,
       },
       data: updateUserDto,
+      omit: noPassword,
     });
   }
 
@@ -39,6 +56,7 @@ export class UsersService {
       where: {
         id,
       },
+      omit: noPassword,
     });
   }
 }

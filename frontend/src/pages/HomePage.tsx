@@ -1,19 +1,18 @@
 import { Box, Typography, Button, Grid } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import PageWrapper from "../ui/PageWrapper";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store";
 
 export default function HomePage() {
+  const isLoggedIn = useSelector(
+    (store: RootState): number | undefined => store.user?.id
+  );
   return (
     <PageWrapper>
-      <Grid
-        container
-        spacing={{ xs: 3, md: 5 }} // Responsive spacing
-        alignItems="center"
-      >
-        <Grid
-          // *** WARNING FIX: Use the 'size' prop for all breakpoints ***
-          size={{ xs: 12, md: 7 }}
-        >
+      <Grid container spacing={{ xs: 3, md: 5 }} alignItems="center">
+        <Grid size={{ xs: 12, md: 7 }}>
           <Box>
             <Typography
               variant="overline"
@@ -66,19 +65,20 @@ export default function HomePage() {
             <Button
               variant="contained"
               color="primary"
-              size="medium" // Reduced from large to medium
-              sx={{ mt: 2, py: 1, px: 3 }} // Adjusted padding
-              // In a real app, this would navigate to the sign-up or task list page
-              onClick={() => console.log("Navigate to Dashboard/Sign Up")}
+              component={Link}
+              to={isLoggedIn ? "/app" : "/register"}
+              size="medium"
+              sx={{ mt: 2, py: 1, px: 3 }}
             >
-              Start Organizing Now (It's Free!)
+              {isLoggedIn
+                ? "Open ToDo list app"
+                : "Start Organizing Now (It's Free!)"}
             </Button>
           </Box>
         </Grid>
 
         {/* --- Right Column: Visual Placeholder --- */}
         <Grid
-          // *** WARNING FIX: Use the 'size' prop for all breakpoints ***
           size={{ xs: 12, md: 5 }}
           sx={{
             display: "flex",

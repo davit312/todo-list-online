@@ -3,3 +3,9 @@ export type FetchError = {
     message: string;
   };
 };
+
+export type LoginError = {
+  data: {
+    error: string;
+  };
+};

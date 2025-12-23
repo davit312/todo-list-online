@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import { Link } from "react-router-dom";
-import HeaderAccount from "../features/user/HeaderAccount";
+import HeaderAccount from "../components/HeaderAccount";
 
 export default function Header() {
   return (

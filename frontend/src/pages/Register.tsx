@@ -7,18 +7,16 @@ import {
   Link as LinkUI,
   TextField,
   Typography,
-  Alert,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import PageWrapper from "../ui/PageWrapper";
 import { useCreateUserMutation } from "../services/user";
-import type { FetchError } from "../types/commons";
-
-const pureLabel = {
-  inputLabel: {
-    required: false,
-  },
-};
+import type { FetchError } from "../types/errors";
+import FormErrors from "../components/FormErrors";
+import { parseForm } from "../utils/functions";
+import { pureLabel } from "../utils/values";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "../features/user/userSlice";
 
 function Register() {
   const [createUser, { isLoading }] = useCreateUserMutation();
@@ -26,13 +24,14 @@ function Register() {
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   const handleSubmit = async function (e: SyntheticEvent) {
     e.preventDefault();
 
     const errors: string[] = [];
 
-    const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const form = Object.fromEntries(formData.entries());
+    const form = parseForm(e.target as HTMLFormElement);
 
     if (form.password !== form.repeatPassword) {
       errors.push("Passwords not match");
@@ -53,11 +52,13 @@ function Register() {
     }
 
     try {
-      await createUser({
+      const res = await createUser({
         email: form.email as string,
         fullname: form.fullname,
         password: form.password as string,
       }).unwrap();
+
+      dispatch(setCurrentUser(res));
       navigate("/app", { replace: true });
     } catch (err) {
       setFormErrors([(err as FetchError).data?.message as string]);
@@ -141,16 +142,7 @@ function Register() {
             </LinkUI>
             if you already have an account.
           </Typography>
-          <br />
-          {formErrors.length > 0 && (
-            <Alert sx={{ width: "100%" }} variant="filled" severity="error">
-              <ul>
-                {formErrors.map((err) => (
-                  <li key={err}>{err}</li>
-                ))}
-              </ul>
-            </Alert>
-          )}
+          {formErrors.length > 0 && <FormErrors errors={formErrors} />}
         </Box>
       </Paper>
     </PageWrapper>

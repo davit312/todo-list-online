@@ -6,9 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Prisma } from 'generated/prisma/client';
+import { AuthGuard } from 'src/auth/auth.guard';
+import type { RequestWithUser } from 'src/auth/constants';
 
 @Controller('users')
 export class UsersController {
@@ -19,27 +23,10 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Post('login')
-  async Login(@Body() creds: { email: string; password: string }) {
-    const user = this.usersService.findByEmail(creds.email);
-
-    return user.then((u) => {
-      if (!u?.id) {
-        return { error: 'User not found' };
-      }
-
-      const { password, ...user } = u;
-
-      if (password !== creds.password) {
-        return { error: 'Wrong credentials' };
-      }
-      return user;
-    });
-  }
-
-  // TODO secure this route or remove
+  @UseGuards(AuthGuard)
   @Get()
-  findAll() {
+  findAll(@Req() request: RequestWithUser) {
+    console.log(request.loggedInUser);
     return this.usersService.findAll();
   }
 

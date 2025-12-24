@@ -14,7 +14,13 @@ import {
 import { Logout } from "@mui/icons-material";
 import type { User } from "../types/user";
 
-export default function UserIcon({ user }: { user: User }) {
+export default function UserIcon({
+  user,
+  logoutFn,
+}: {
+  user: User;
+  logoutFn: () => void;
+}) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -37,7 +43,7 @@ export default function UserIcon({ user }: { user: User }) {
         aria-describedby={id}
         onClick={handleClick}
       >
-        <Avatar {...stringAvatarProps(user.fullname)} />
+        <Avatar {...stringAvatarProps(user.fullname as string)} />
       </span>
       <Popover
         id={id}
@@ -55,7 +61,7 @@ export default function UserIcon({ user }: { user: User }) {
           </Typography>
           <Divider />
           <MenuList>
-            <MenuItem>
+            <MenuItem onClick={logoutFn}>
               <ListItemIcon>
                 <Logout fontSize="medium" />
               </ListItemIcon>

@@ -17,13 +17,11 @@ import { pureLabel, TOKEN_KEY_NAME } from "../utils/values";
 import { useDispatch } from "react-redux";
 
 import { setCurrentUser } from "../features/user/userSlice";
-import { useLocalStorageState } from "../utils/useLocalStorage";
 import type { FetchError } from "../types/errors";
 
 function Login() {
   const [login, { isLoading }] = useLoginMutation();
   const [formErrors, setFormErrors] = useState<string[]>([]);
-  const [, setToken] = useLocalStorageState("", TOKEN_KEY_NAME);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -46,7 +44,7 @@ function Login() {
       return;
     }
 
-    setToken(res.data.access_token);
+    localStorage.setItem(TOKEN_KEY_NAME, res.data.access_token);
 
     dispatch(setCurrentUser(res.data.user));
     navigate("/app", { replace: true });

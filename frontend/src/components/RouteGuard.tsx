@@ -2,7 +2,6 @@ import { useEffect, type ReactNode } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useLocalStorageState } from "../utils/useLocalStorage";
 import { useGetCurrentUserQuery } from "../services/user";
 import { authHeader } from "../utils/functions";
 import PageWrapper from "../ui/PageWrapper";
@@ -21,17 +20,19 @@ function RouteGuard({ children }: Props) {
   const isLoggedin = useSelector((state: RootState) => state.user.id);
   const navigate = useNavigate();
   const path = useLocation().pathname;
-  const [token] = useLocalStorageState("", TOKEN_KEY_NAME);
+  const token = localStorage.getItem(TOKEN_KEY_NAME) as string;
 
   const { data: userdata, isLoading } = useGetCurrentUserQuery(
     authHeader(token),
     { skip: !token || isLoggedin }
   );
 
+  console.log("guard skip", !token, isLoggedin);
   const dispatch = useDispatch();
 
   useEffect(
     function () {
+      console.log("guard", token, isLoggedin);
       if (userdata?.id) {
         dispatch(setCurrentUser(userdata));
       }

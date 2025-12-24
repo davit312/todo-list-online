@@ -14,16 +14,30 @@ import { UsersService } from './users.service';
 import { Prisma } from 'generated/prisma/client';
 import { AuthGuard } from 'src/auth/auth.guard';
 import type { RequestWithCurrentUser } from 'src/auth/constants';
-// import { AuthGuard } from 'src/auth/auth.guard';
-// import type { RequestWithUser } from 'src/auth/constants';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @Post()
-  create(@Body() createUserDto: Prisma.UserCreateInput) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: Prisma.UserCreateInput) {
+    const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      password: _,
+      id,
+      ...user
+    } = await this.usersService.create(createUserDto);
+    const usr = { sub: id, ...user };
+    const token = await this.jwtService.signAsync(usr);
+
+    return {
+      user: usr,
+      access_token: token,
+    };
   }
 
   @UseGuards(AuthGuard)

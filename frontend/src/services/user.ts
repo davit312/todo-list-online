@@ -12,7 +12,7 @@ export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
   endpoints: (builder) => ({
-    createUser: builder.mutation<User, User>({
+    createUser: builder.mutation<UserWithToken, User>({
       query: (newUser) => ({
         url: "/users",
         method: "POST",

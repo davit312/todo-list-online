@@ -17,15 +17,12 @@ import { parseForm } from "../utils/functions";
 import { pureLabel, TOKEN_KEY_NAME } from "../utils/values";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../features/user/userSlice";
-import { useLocalStorageState } from "../utils/useLocalStorage";
 
 function Register() {
   const [createUser, { isLoading }] = useCreateUserMutation();
 
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const navigate = useNavigate();
-  const [token, setToken] = useLocalStorageState("", TOKEN_KEY_NAME);
-
   const dispatch = useDispatch();
 
   const handleSubmit = async function (e: SyntheticEvent) {
@@ -60,8 +57,10 @@ function Register() {
         password: form.password as string,
       }).unwrap();
 
-      dispatch(setCurrentUser(res));
-      navigate("/app", { replace: true });
+      localStorage.setItem(TOKEN_KEY_NAME, res.access_token);
+      dispatch(setCurrentUser(res.user));
+      console.log(localStorage);
+      setTimeout(() => navigate("/app", { replace: true }), 5000);
     } catch (err) {
       setFormErrors([(err as FetchError).data?.message as string]);
     }

@@ -7,4 +7,6 @@ export const jwtConstants = {
   secret: process.env.AUTH_SECRET,
 };
 
-export type RequestWithUser = Request & { loggedInUser: User };
+export type RequestWithCurrentUser = Request & {
+  loggedInUser: Partial<User> & { sub: number };
+};

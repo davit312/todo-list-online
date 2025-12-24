@@ -14,15 +14,17 @@ import { useCreateUserMutation } from "../services/user";
 import type { FetchError } from "../types/errors";
 import FormErrors from "../components/FormErrors";
 import { parseForm } from "../utils/functions";
-import { pureLabel } from "../utils/values";
+import { pureLabel, TOKEN_KEY_NAME } from "../utils/values";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../features/user/userSlice";
+import { useLocalStorageState } from "../utils/useLocalStorage";
 
 function Register() {
   const [createUser, { isLoading }] = useCreateUserMutation();
 
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const navigate = useNavigate();
+  const [token, setToken] = useLocalStorageState("", TOKEN_KEY_NAME);
 
   const dispatch = useDispatch();
 

@@ -1,18 +1,21 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   UseGuards,
+  Get,
+  // Patch,
+  // Param,
+  // Delete,
+  // UseGuards,
   Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Prisma } from 'generated/prisma/client';
 import { AuthGuard } from 'src/auth/auth.guard';
-import type { RequestWithUser } from 'src/auth/constants';
+import type { RequestWithCurrentUser } from 'src/auth/constants';
+// import { AuthGuard } from 'src/auth/auth.guard';
+// import type { RequestWithUser } from 'src/auth/constants';
 
 @Controller('users')
 export class UsersController {
@@ -23,6 +26,13 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(AuthGuard)
+  @Get('/currentuser')
+  getCurrentuser(@Req() request: RequestWithCurrentUser) {
+    const { sub, fullname, email } = request.loggedInUser;
+    return { sub, fullname, email };
+  }
+  /*
   @UseGuards(AuthGuard)
   @Get()
   findAll(@Req() request: RequestWithUser) {
@@ -50,4 +60,5 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+  */
 }

@@ -3,3 +3,7 @@ export function parseForm(formEl: HTMLFormElement) {
   const form = Object.fromEntries(formData.entries());
   return form;
 }
+
+export function authHeader(token: string) {
+  return `Bearer ${token}`;
+}

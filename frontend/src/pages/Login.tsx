@@ -12,15 +12,18 @@ import FormErrors from "../components/FormErrors";
 import { useState, type SyntheticEvent } from "react";
 import { useLoginMutation } from "../services/user";
 import { parseForm } from "../utils/functions";
-import { pureLabel } from "../utils/values";
-import type { LoginError } from "../types/errors";
+import { pureLabel, TOKEN_KEY_NAME } from "../utils/values";
+
 import { useDispatch } from "react-redux";
 
 import { setCurrentUser } from "../features/user/userSlice";
+import { useLocalStorageState } from "../utils/useLocalStorage";
+import type { FetchError } from "../types/errors";
 
 function Login() {
   const [login, { isLoading }] = useLoginMutation();
   const [formErrors, setFormErrors] = useState<string[]>([]);
+  const [, setToken] = useLocalStorageState("", TOKEN_KEY_NAME);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -34,16 +37,18 @@ function Login() {
       password: form.password.valueOf() as string,
     });
 
-    if (!res?.data?.id) {
-      let err = "Login Error";
-      if ((res as LoginError)?.data?.error) {
-        err = (res as LoginError).data.error;
+    if (!res?.data?.user) {
+      let errorMsg = "Login Error";
+      if (res?.error) {
+        errorMsg = (res.error as FetchError).data.message;
       }
-      setFormErrors([err]);
+      setFormErrors([errorMsg]);
       return;
     }
 
-    dispatch(setCurrentUser(res.data));
+    setToken(res.data.access_token);
+
+    dispatch(setCurrentUser(res.data.user));
     navigate("/app", { replace: true });
   };
 

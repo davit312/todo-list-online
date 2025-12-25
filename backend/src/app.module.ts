@@ -9,7 +9,13 @@ import { AuthModule } from './auth/auth.module';
 import { TodoModule } from './todo/todo.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, UsersModule, AuthModule, TodoModule],
+  imports: [
+    ConfigModule.forRoot(),
+    DatabaseModule,
+    UsersModule,
+    AuthModule,
+    TodoModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

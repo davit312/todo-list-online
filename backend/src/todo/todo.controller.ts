@@ -13,6 +13,7 @@ import { TodoService } from './todo.service';
 import { Prisma } from 'generated/prisma/client';
 import { AuthGuard } from 'src/auth/auth.guard';
 import type { RequestWithCurrentUser } from 'src/auth/constants';
+import { TodoCreateInput } from 'generated/prisma/models';
 
 @Controller('todo')
 export class TodoController {
@@ -20,8 +21,13 @@ export class TodoController {
 
   @UseGuards(AuthGuard)
   @Post()
-  create(@Body() createTodoDto: Prisma.TodoCreateInput) {
-    return this.todoService.create(createTodoDto);
+  create(@Req() request: RequestWithCurrentUser) {
+    const newTodo = {
+      ...(request.body as TodoCreateInput),
+      userId: request.loggedInUser.id,
+    };
+
+    return this.todoService.create(newTodo as TodoCreateInput);
   }
 
   @UseGuards(AuthGuard)
@@ -41,7 +47,11 @@ export class TodoController {
 
   @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.todoService.remove(+id);
+  remove(@Param('id') id: string, @Req() request: RequestWithCurrentUser) {
+    if (request.loggedInUser.id) {
+      const userId: number = request.loggedInUser.id;
+      return this.todoService.remove(+id, userId);
+    }
+    throw new Error('Error while creating new todo');
   }
 }

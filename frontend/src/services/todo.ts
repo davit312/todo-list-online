@@ -16,6 +16,13 @@ export const todoApi = createApi({
     },
   }),
   endpoints: (builder) => ({
+    createTodo: builder.mutation<Todo, Todo>({
+      query: (todo) => ({
+        url: "/todo",
+        method: "POST",
+        body: todo,
+      }),
+    }),
     getUserTodos: builder.mutation({
       query: () => ({
         url: `/todo`,
@@ -29,7 +36,18 @@ export const todoApi = createApi({
         body: req.todo,
       }),
     }),
+    deleteTodo: builder.mutation<Todo, number>({
+      query: (taskid) => ({
+        method: `delete`,
+        url: `/todo/${taskid}`,
+      }),
+    }),
   }),
 });
 
-export const { useGetUserTodosMutation, useUpdateTodoMutation } = todoApi;
+export const {
+  useGetUserTodosMutation,
+  useUpdateTodoMutation,
+  useCreateTodoMutation,
+  useDeleteTodoMutation,
+} = todoApi;

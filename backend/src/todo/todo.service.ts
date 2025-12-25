@@ -36,10 +36,12 @@ export class TodoService {
     });
   }
 
-  remove(id: number) {
+  remove(id: number, userId: number) {
+    console.log(id, userId);
     return this.databaseService.todo.delete({
       where: {
         id,
+        userId,
       },
     });
   }

@@ -33,7 +33,6 @@ const todoSlice = createSlice({
       },
     },
     setTodos(state, action) {
-      console.log(action);
       state.todos = action.payload;
     },
   },

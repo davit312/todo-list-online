@@ -7,9 +7,6 @@ import {
   ListItemText,
   Divider,
   Alert,
-  Box,
-  TextField,
-  Button,
   IconButton,
   ListItem,
 } from "@mui/material";
@@ -17,13 +14,14 @@ import PageWrapper from "../ui/PageWrapper";
 import CircularLoading from "../ui/CircularLoading";
 
 import {
+  useCreateTodoMutation,
+  useDeleteTodoMutation,
   useGetUserTodosMutation,
   useUpdateTodoMutation,
 } from "../services/todo";
 
 import type { Todo } from "../types/todo";
 import Statistics from "../ui/Statistics";
-import { Form } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   setError,
@@ -34,10 +32,14 @@ import {
   useTodos,
 } from "../features/todo/todoSlice";
 import { useDispatch } from "react-redux";
+import NewTodoForm from "../ui/NewTodoForm";
 
 export default function TodoPage() {
   const todosState = useTodos();
   const dispatch = useDispatch();
+
+  const [createTodo] = useCreateTodoMutation();
+  const [deleteTodo] = useDeleteTodoMutation();
   const [getInitialTodos] = useGetUserTodosMutation();
 
   useEffect(
@@ -69,8 +71,15 @@ export default function TodoPage() {
     0
   );
 
+  const handleAddTodo = function (task: string) {
+    return createTodo({ task })
+      .then((res) => {
+        dispatch(setTodos([res.data, ...todosState.todos]));
+      })
+      .catch((e) => console.log(e.error.data.message));
+  };
+
   const handleTodoClick = async function (todo: Todo) {
-    dispatch(setLoading(true));
     const res = await updateTodo({
       id: todo.id!,
       todo: { done: !todo.done },
@@ -80,39 +89,26 @@ export default function TodoPage() {
       dispatch(
         setTodos(
           todosState.todos.map((todo: Todo) => {
-            console.log("bbb");
             return todo.id === res.data.id ? res.data : todo;
           })
         )
       );
-      dispatch(setLoading(false));
+    } else if (res.error) {
+      setError(true, "Error updating todo");
     }
   };
 
   const handleDeleteClick = function (todo: Todo) {
-    console.log("delete", todo.id);
+    deleteTodo(todo?.id as number).then((res) => {
+      dispatch(
+        setTodos(todosState.todos.filter((t: Todo) => t.id !== res.data?.id))
+      );
+    });
   };
 
   return (
     <PageWrapper>
-      <Form>
-        <Box sx={{ display: "flex", width: "100%", p: 2 }}>
-          <TextField
-            fullWidth
-            label="Enter New Task"
-            variant="outlined"
-            placeholder="Add new task..."
-          />
-          <Button
-            disabled={todosState.loading}
-            variant="contained"
-            onClick={() => {}}
-            sx={{ mr: -1 }}
-          >
-            Add
-          </Button>
-        </Box>
-      </Form>
+      <NewTodoForm loading={todosState.loading} handleAddTodo={handleAddTodo} />
       {todosState.loading ? (
         <CircularLoading />
       ) : (

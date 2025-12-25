@@ -2,13 +2,11 @@ import { Box, Typography, Button, Grid } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import PageWrapper from "../ui/PageWrapper";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import type { RootState } from "../store";
+import { useUser } from "../features/user/userSlice";
 
 export default function HomePage() {
-  const isLoggedIn = useSelector(
-    (store: RootState): number | undefined => store.user?.id
-  );
+  const isLoggedIn = useUser().id;
+
   return (
     <PageWrapper>
       <Grid container spacing={{ xs: 3, md: 5 }} alignItems="center">

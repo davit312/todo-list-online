@@ -1,13 +1,12 @@
 import { useEffect, type ReactNode } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../store";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGetCurrentUserQuery } from "../services/user";
 import { authHeader } from "../utils/functions";
 import PageWrapper from "../ui/PageWrapper";
 import { Box, CircularProgress } from "@mui/material";
-import { clearUser, setCurrentUser } from "../features/user/userSlice";
-import { TOKEN_KEY_NAME } from "../utils/values";
+import { clearUser, setCurrentUser, useUser } from "../features/user/userSlice";
+import useToken from "../utils/useToken";
 
 type Props = {
   children: ReactNode;
@@ -17,17 +16,19 @@ const onlyUsersAllowed = ["/app"];
 const usersRejected = ["/login", "/register"];
 
 function RouteGuard({ children }: Props) {
-  const isLoggedin = useSelector((state: RootState) => state.user.id);
+  const user = useUser();
+  const isLoggedIn = user.id !== undefined;
+
   const navigate = useNavigate();
   const path = useLocation().pathname;
-  const token = localStorage.getItem(TOKEN_KEY_NAME) as string;
+  const { token } = useToken();
 
   const {
     data: userdata,
     isLoading,
     isError,
-  } = useGetCurrentUserQuery(authHeader(token), {
-    skip: isLoggedin || !token,
+  } = useGetCurrentUserQuery(authHeader(token as string), {
+    skip: isLoggedIn || !token,
   });
 
   const dispatch = useDispatch();
@@ -40,18 +41,18 @@ function RouteGuard({ children }: Props) {
       if (userdata?.id) {
         dispatch(setCurrentUser(userdata));
       }
-      if (isLoggedin) {
+      if (isLoggedIn) {
         if (usersRejected.includes(path)) {
-          navigate("/app");
+          navigate("/app", { replace: true });
         }
       } else {
         if (token) return; // waait to auto login result
         if (onlyUsersAllowed.includes(path)) {
-          navigate("/login");
+          navigate("/login", { replace: true });
         }
       }
     },
-    [isLoggedin, isError, path, token, userdata, dispatch, navigate]
+    [isLoggedIn, isError, path, token, userdata, dispatch, navigate]
   );
 
   if (isLoading) {

@@ -12,11 +12,6 @@ export type Credentials = {
 
 export type User = Partial<FullUser>;
 
-export type LoginResponse = {
-  user: User & { sub: number };
-  access_token: string;
-};
-
 export type UserWithToken = {
   user: User;
   access_token: string;

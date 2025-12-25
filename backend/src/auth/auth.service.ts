@@ -15,7 +15,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id: _, password: __, ...payload } = { ...user, sub: user.id };
+    const { password: __, ...payload } = user;
 
     return {
       user: payload,

@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { TOKEN_KEY_NAME } from "../../utils/values";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store";
+import type { User } from "../../types/user";
 
 const initialState = {
   fullname: "",
@@ -18,11 +20,16 @@ const userSlice = createSlice({
       return action.payload;
     },
     clearUser() {
-      localStorage.setItem(TOKEN_KEY_NAME, "");
       return initialState;
     },
   },
 });
+
+export const useUser = function () {
+  const user = useSelector((store: RootState): User => store.user);
+  if (!user) throw new Error("Error fetching user from store");
+  return user;
+};
 
 export const { setCurrentUser, clearUser } = userSlice.actions;
 

@@ -14,16 +14,19 @@ import { useCreateUserMutation } from "../services/user";
 import type { FetchError } from "../types/errors";
 import FormErrors from "../components/FormErrors";
 import { parseForm } from "../utils/functions";
-import { pureLabel, TOKEN_KEY_NAME } from "../utils/values";
-import { useDispatch } from "react-redux";
+import { pureLabel } from "../utils/values";
+import useToken from "../utils/useToken";
 import { setCurrentUser } from "../features/user/userSlice";
+import { useDispatch } from "react-redux";
 
 function Register() {
   const [createUser, { isLoading }] = useCreateUserMutation();
 
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const navigate = useNavigate();
+
   const dispatch = useDispatch();
+  const { setToken } = useToken();
 
   const handleSubmit = async function (e: SyntheticEvent) {
     e.preventDefault();
@@ -57,10 +60,10 @@ function Register() {
         password: form.password as string,
       }).unwrap();
 
-      localStorage.setItem(TOKEN_KEY_NAME, res.access_token);
+      setToken(res.access_token);
       dispatch(setCurrentUser(res.user));
-      console.log(localStorage);
-      setTimeout(() => navigate("/app", { replace: true }), 5000);
+
+      navigate("/app", { replace: true });
     } catch (err) {
       setFormErrors([(err as FetchError).data?.message as string]);
     }

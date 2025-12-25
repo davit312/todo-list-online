@@ -28,14 +28,12 @@ export class UsersController {
     const {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       password: _,
-      id,
       ...user
     } = await this.usersService.create(createUserDto);
-    const usr = { sub: id, ...user };
-    const token = await this.jwtService.signAsync(usr);
+    const token = await this.jwtService.signAsync(user);
 
     return {
-      user: usr,
+      user: user,
       access_token: token,
     };
   }
@@ -43,8 +41,8 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @Get('/currentuser')
   getCurrentuser(@Req() request: RequestWithCurrentUser) {
-    const { sub, fullname, email } = request.loggedInUser;
-    return { sub, fullname, email };
+    const { id, fullname, email } = request.loggedInUser;
+    return { id, fullname, email };
   }
   /*
   @UseGuards(AuthGuard)

@@ -8,5 +8,5 @@ export const jwtConstants = {
 };
 
 export type RequestWithCurrentUser = Request & {
-  loggedInUser: Partial<User> & { sub: number };
+  loggedInUser: Partial<User>;
 };

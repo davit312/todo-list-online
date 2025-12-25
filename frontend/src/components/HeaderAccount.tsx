@@ -1,21 +1,24 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import { Button } from "@mui/material";
 
 import UserIcon from "../ui/UserIcon";
-import type { User } from "../types/user";
-import type { RootState } from "../store";
-import { Link } from "react-router-dom";
-import { clearUser } from "../features/user/userSlice";
+import { Link, useNavigate } from "react-router-dom";
+import { clearUser, useUser } from "../features/user/userSlice";
+import useToken from "../utils/useToken";
 
 function HeaderAccount() {
-  const user = useSelector((store: RootState): User => store.user);
+  const user = useUser();
   const dispathch = useDispatch();
+  const navigate = useNavigate();
+  const { setToken } = useToken();
 
   return user.id ? (
     <UserIcon
       logoutFn={() => {
+        setToken("");
         dispathch(clearUser());
+        setTimeout(() => navigate("/", { replace: true }));
       }}
       user={user}
     />

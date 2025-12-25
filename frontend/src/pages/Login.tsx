@@ -12,12 +12,13 @@ import FormErrors from "../components/FormErrors";
 import { useState, type SyntheticEvent } from "react";
 import { useLoginMutation } from "../services/user";
 import { parseForm } from "../utils/functions";
-import { pureLabel, TOKEN_KEY_NAME } from "../utils/values";
+import { pureLabel } from "../utils/values";
 
 import { useDispatch } from "react-redux";
 
 import { setCurrentUser } from "../features/user/userSlice";
 import type { FetchError } from "../types/errors";
+import useToken from "../utils/useToken";
 
 function Login() {
   const [login, { isLoading }] = useLoginMutation();
@@ -25,6 +26,7 @@ function Login() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+  const { setToken } = useToken();
 
   const handleSubmit = async function (e: SyntheticEvent) {
     e.preventDefault();
@@ -44,9 +46,9 @@ function Login() {
       return;
     }
 
-    localStorage.setItem(TOKEN_KEY_NAME, res.data.access_token);
-
+    setToken(res.data.access_token);
     dispatch(setCurrentUser(res.data.user));
+
     navigate("/app", { replace: true });
   };
 

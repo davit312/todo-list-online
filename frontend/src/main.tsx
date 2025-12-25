@@ -14,7 +14,7 @@ import "./index.css";
 import BaseLayout from "./BaseLayout.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import ErrorPage from "./pages/ErrorPage.tsx";
-import Todo from "./pages/Todo.tsx";
+import TodoPage from "./pages/TodoPage.tsx";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
       },
       {
         path: "app",
-        Component: Todo,
+        Component: TodoPage,
       },
       {
         path: "login",

@@ -6,7 +6,7 @@ import { useGetCurrentUserQuery } from "../services/user";
 import { authHeader } from "../utils/functions";
 import PageWrapper from "../ui/PageWrapper";
 import { Box, CircularProgress } from "@mui/material";
-import { setCurrentUser } from "../features/user/userSlice";
+import { clearUser, setCurrentUser } from "../features/user/userSlice";
 import { TOKEN_KEY_NAME } from "../utils/values";
 
 type Props = {
@@ -22,17 +22,21 @@ function RouteGuard({ children }: Props) {
   const path = useLocation().pathname;
   const token = localStorage.getItem(TOKEN_KEY_NAME) as string;
 
-  const { data: userdata, isLoading } = useGetCurrentUserQuery(
-    authHeader(token),
-    { skip: !token || isLoggedin }
-  );
+  const {
+    data: userdata,
+    isLoading,
+    isError,
+  } = useGetCurrentUserQuery(authHeader(token), {
+    skip: isLoggedin || !token,
+  });
 
-  console.log("guard skip", !token, isLoggedin);
   const dispatch = useDispatch();
 
   useEffect(
     function () {
-      console.log("guard", token, isLoggedin);
+      if (isError) {
+        dispatch(clearUser());
+      }
       if (userdata?.id) {
         dispatch(setCurrentUser(userdata));
       }
@@ -47,7 +51,7 @@ function RouteGuard({ children }: Props) {
         }
       }
     },
-    [isLoggedin, path, token, userdata, dispatch, navigate]
+    [isLoggedin, isError, path, token, userdata, dispatch, navigate]
   );
 
   if (isLoading) {

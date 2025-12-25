@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { TOKEN_KEY_NAME } from "../../utils/values";
 
 const initialState = {
   fullname: "",
@@ -17,6 +18,7 @@ const userSlice = createSlice({
       return action.payload;
     },
     clearUser() {
+      localStorage.setItem(TOKEN_KEY_NAME, "");
       return initialState;
     },
   },

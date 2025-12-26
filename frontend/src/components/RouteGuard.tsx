@@ -34,7 +34,8 @@ function RouteGuard({ children }: Props) {
   useEffect(
     function () {
       if (!isLoggedIn()) {
-        if (userdata?.id) {
+        if (userdata?.id && getToken()) {
+          // Set user only if token exists
           dispatch(setCurrentUser(userdata));
         } else {
           dispatch(clearUser());

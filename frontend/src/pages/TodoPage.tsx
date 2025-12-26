@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import {
   Checkbox,
@@ -9,6 +9,7 @@ import {
   Alert,
   IconButton,
   ListItem,
+  LinearProgress,
 } from "@mui/material";
 import PageWrapper from "../ui/PageWrapper";
 import CircularLoading from "../ui/CircularLoading";
@@ -41,6 +42,7 @@ export default function TodoPage() {
   const [createTodo] = useCreateTodoMutation();
   const [deleteTodo] = useDeleteTodoMutation();
   const [getInitialTodos] = useGetUserTodosMutation();
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(
     function () {
@@ -71,7 +73,7 @@ export default function TodoPage() {
     0
   );
 
-  const handleAddTodo = function (task: string) {
+  const handleAddTodo = async function (task: string) {
     return createTodo({ task })
       .then((res) => {
         dispatch(setTodos([res.data, ...todosState.todos]));
@@ -80,6 +82,7 @@ export default function TodoPage() {
   };
 
   const handleTodoClick = async function (todo: Todo) {
+    setActionLoading(true);
     const res = await updateTodo({
       id: todo.id!,
       todo: { done: !todo.done },
@@ -96,19 +99,25 @@ export default function TodoPage() {
     } else if (res.error) {
       setError(true, "Error updating todo");
     }
+    setActionLoading(false);
   };
 
-  const handleDeleteClick = function (todo: Todo) {
-    deleteTodo(todo?.id as number).then((res) => {
-      dispatch(
-        setTodos(todosState.todos.filter((t: Todo) => t.id !== res.data?.id))
-      );
-    });
+  const handleDeleteClick = async function (todo: Todo) {
+    setActionLoading(true);
+    const res = await deleteTodo(todo?.id as number);
+    dispatch(
+      setTodos(todosState.todos.filter((t: Todo) => t.id !== res.data?.id))
+    );
+    setActionLoading(false);
   };
 
   return (
     <PageWrapper>
-      <NewTodoForm loading={todosState.loading} handleAddTodo={handleAddTodo} />
+      <NewTodoForm
+        loading={todosState.loading}
+        handleAddTodo={handleAddTodo}
+        setLoader={setActionLoading}
+      />
       {todosState.loading ? (
         <CircularLoading />
       ) : (
@@ -118,6 +127,7 @@ export default function TodoPage() {
             done={done}
             todo={todosState.todos.length - done}
           />
+          {actionLoading && <LinearProgress />}
           {todosState.todos.map((item: Todo, index: number, arr: Todo[]) => (
             <ListItem
               secondaryAction={

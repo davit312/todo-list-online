@@ -16,6 +16,9 @@ export class TodoService {
       where: {
         userId,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 

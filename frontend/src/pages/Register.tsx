@@ -1,23 +1,16 @@
 import { useState, type SyntheticEvent } from "react";
 
-import {
-  Box,
-  Button,
-  Paper,
-  Link as LinkUI,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Paper, Link as LinkUI, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import PageWrapper from "../ui/PageWrapper";
 import { useCreateUserMutation } from "../services/user";
 import type { FetchError } from "../types/errors";
 import FormErrors from "../components/FormErrors";
 import { parseForm } from "../utils/functions";
-import { pureLabel } from "../utils/values";
 import { setToken } from "../utils/manageToken";
 import { setCurrentUser } from "../features/user/userSlice";
 import { useDispatch } from "react-redux";
+import Input from "../ui/Input";
 
 function Register() {
   const [createUser, { isLoading }] = useCreateUserMutation();
@@ -84,48 +77,14 @@ function Register() {
           <Typography variant="h4" sx={{ fontWeight: 500 }}>
             Create new account
           </Typography>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="fullname"
-            label="Fullname"
-            name="fullname"
-            autoComplete="fullname"
-            slotProps={pureLabel}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            slotProps={pureLabel}
-            label="Email Address"
-            name="email"
-            type="email"
-            autoComplete="email"
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            slotProps={pureLabel}
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
+
+          <Input label="Fullname" name="fullname" />
+          <Input label="Email Address" name="email" type="email" />
+          <Input name="password" label="Password" type="password" />
+          <Input
             name="repeatPassword"
-            slotProps={pureLabel}
             label="Repeat Password"
             type="password"
-            id="repeatPassword"
-            autoComplete="repeatPassword"
           />
 
           <Button

@@ -5,13 +5,12 @@ import { Button } from "@mui/material";
 import UserIcon from "../ui/UserIcon";
 import { Link, useNavigate } from "react-router-dom";
 import { clearUser, useUser } from "../features/user/userSlice";
-import useToken from "../utils/useToken";
+import { setToken } from "../utils/manageToken";
 
 function HeaderAccount() {
   const user = useUser();
   const dispathch = useDispatch();
   const navigate = useNavigate();
-  const { setToken } = useToken();
 
   return user.id ? (
     <UserIcon

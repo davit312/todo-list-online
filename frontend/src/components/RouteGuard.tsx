@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useCallback, useEffect, type ReactNode } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGetCurrentUserQuery } from "../services/user";
@@ -6,7 +6,7 @@ import { authHeader } from "../utils/functions";
 import PageWrapper from "../ui/PageWrapper";
 import { Box, CircularProgress } from "@mui/material";
 import { clearUser, setCurrentUser, useUser } from "../features/user/userSlice";
-import useToken from "../utils/useToken";
+import { getToken } from "../utils/manageToken";
 
 type Props = {
   children: ReactNode;
@@ -17,43 +17,51 @@ const usersRejected = ["/login", "/register"];
 
 function RouteGuard({ children }: Props) {
   const user = useUser();
-  const isLoggedIn = user.id !== undefined;
+  const isLoggedIn = useCallback(() => user.id !== undefined, [user]);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const path = useLocation().pathname;
-  const { token } = useToken();
-
   const {
     data: userdata,
     isLoading,
     isError,
-  } = useGetCurrentUserQuery(authHeader(token as string), {
-    skip: isLoggedIn || !token,
+  } = useGetCurrentUserQuery(authHeader(getToken() as string), {
+    skip: isLoggedIn() || !getToken(),
   });
 
-  const dispatch = useDispatch();
-
+  //Login hook
   useEffect(
     function () {
-      if (isError) {
-        dispatch(clearUser());
+      if (!isLoggedIn()) {
+        if (userdata?.id) {
+          dispatch(setCurrentUser(userdata));
+        } else {
+          dispatch(clearUser());
+        }
       }
-      if (userdata?.id) {
-        dispatch(setCurrentUser(userdata));
-      }
-      if (isLoggedIn) {
+    },
+    [isLoggedIn, userdata, dispatch]
+  );
+
+  // Redirect hook
+  useEffect(
+    function () {
+      if (isLoggedIn()) {
         if (usersRejected.includes(path)) {
           navigate("/app", { replace: true });
         }
       } else {
-        if (token) return; // waait to auto login result
+        if (getToken()) return; // if token exists wait for login
         if (onlyUsersAllowed.includes(path)) {
           navigate("/login", { replace: true });
         }
       }
     },
-    [isLoggedIn, isError, path, token, userdata, dispatch, navigate]
+    [isLoggedIn, path, navigate]
   );
+
+  if (isError) return "ERROR loading user";
 
   if (isLoading) {
     return (

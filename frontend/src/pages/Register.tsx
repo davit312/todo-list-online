@@ -15,7 +15,7 @@ import type { FetchError } from "../types/errors";
 import FormErrors from "../components/FormErrors";
 import { parseForm } from "../utils/functions";
 import { pureLabel } from "../utils/values";
-import useToken from "../utils/useToken";
+import { setToken } from "../utils/manageToken";
 import { setCurrentUser } from "../features/user/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -26,7 +26,6 @@ function Register() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { setToken } = useToken();
 
   const handleSubmit = async function (e: SyntheticEvent) {
     e.preventDefault();

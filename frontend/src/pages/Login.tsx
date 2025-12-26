@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 
 import { setCurrentUser } from "../features/user/userSlice";
 import type { FetchError } from "../types/errors";
-import useToken from "../utils/useToken";
+import { setToken } from "../utils/manageToken";
 import Input from "../ui/Input";
 
 function Login() {
@@ -19,7 +19,6 @@ function Login() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { setToken } = useToken();
 
   const handleSubmit = async function (e: SyntheticEvent) {
     e.preventDefault();

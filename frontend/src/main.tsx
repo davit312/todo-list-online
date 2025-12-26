@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, lazy } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -9,14 +9,14 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import "./index.css";
 
 import BaseLayout from "./BaseLayout.tsx";
 import HomePage from "./pages/HomePage.tsx";
-import ErrorPage from "./pages/ErrorPage.tsx";
-import TodoPage from "./pages/TodoPage.tsx";
-import Login from "./pages/Login.tsx";
-import Register from "./pages/Register.tsx";
+
+const ErrorPage = lazy(() => import("./pages/ErrorPage.tsx"));
+const TodoPage = lazy(() => import("./pages/TodoPage.tsx"));
+const Login = lazy(() => import("./pages/Login.tsx"));
+const Register = lazy(() => import("./pages/Register.tsx"));
 
 const router = createBrowserRouter([
   {

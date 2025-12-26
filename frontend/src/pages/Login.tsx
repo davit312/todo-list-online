@@ -1,24 +1,17 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Link as LinkUI,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Paper, Link as LinkUI, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import PageWrapper from "../ui/PageWrapper";
 import FormErrors from "../components/FormErrors";
 import { useState, type SyntheticEvent } from "react";
 import { useLoginMutation } from "../services/user";
 import { parseForm } from "../utils/functions";
-import { pureLabel } from "../utils/values";
 
 import { useDispatch } from "react-redux";
 
 import { setCurrentUser } from "../features/user/userSlice";
 import type { FetchError } from "../types/errors";
 import useToken from "../utils/useToken";
+import Input from "../ui/Input";
 
 function Login() {
   const [login, { isLoading }] = useLoginMutation();
@@ -67,28 +60,9 @@ function Login() {
           <Typography variant="h4" sx={{ fontWeight: 500 }}>
             Login with email
           </Typography>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            slotProps={pureLabel}
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            slotProps={pureLabel}
-          />
+          <Input label="Email Address" name="email" type="email" />
+
+          <Input name="password" label="Password" type="password" />
           <Button
             type="submit"
             fullWidth

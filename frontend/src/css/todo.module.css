@@ -1,0 +1,10 @@
+.loadContainer {
+  width: 100%;
+  position: relative;
+}
+.loadContainer .progressBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}

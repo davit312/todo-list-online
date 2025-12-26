@@ -24,24 +24,27 @@ function Login() {
     e.preventDefault();
     const form = parseForm(e.target as HTMLFormElement);
 
-    const res = await login({
-      email: form.email.valueOf() as string,
-      password: form.password.valueOf() as string,
-    });
+    let errorMsg = "Unlnown login Error";
+    try {
+      const res = await login({
+        email: form.email.valueOf() as string,
+        password: form.password.valueOf() as string,
+      });
 
-    if (!res?.data?.user) {
-      let errorMsg = "Login Error";
-      if (res?.error) {
-        errorMsg = (res.error as FetchError).data.message;
+      if (res?.data?.user) {
+        setToken(res.data.access_token);
+        dispatch(setCurrentUser(res.data.user));
+
+        navigate("/app", { replace: true });
+      } else if (res.error) {
+        // Promise not always throws error, check result
+        if ((res.error as FetchError)?.data.message)
+          errorMsg = (res.error as FetchError)?.data.message;
+        setFormErrors([errorMsg]);
       }
+    } catch {
       setFormErrors([errorMsg]);
-      return;
     }
-
-    setToken(res.data.access_token);
-    dispatch(setCurrentUser(res.data.user));
-
-    navigate("/app", { replace: true });
   };
 
   return (

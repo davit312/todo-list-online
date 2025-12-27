@@ -1,4 +1,4 @@
-import { useCallback, useEffect, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGetCurrentUserQuery } from "../services/user";
@@ -17,9 +17,8 @@ const usersRejected = ["/login", "/register"];
 
 function RouteGuard({ children }: Props) {
   const user = useUser();
-  const isLoggedIn = useCallback(() => user.id !== undefined, [user]);
+  const isLoggedIn = user.id !== undefined;
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
   const path = useLocation().pathname;
   const {
@@ -27,13 +26,13 @@ function RouteGuard({ children }: Props) {
     isLoading,
     isError,
   } = useGetCurrentUserQuery(authHeader(getToken() as string), {
-    skip: isLoggedIn() || !getToken(),
+    skip: isLoggedIn || !getToken(),
   });
 
   //Login hook
   useEffect(
     function () {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn) {
         if (userdata?.id && getToken()) {
           // Set user only if token exists
           dispatch(setCurrentUser(userdata));
@@ -48,7 +47,7 @@ function RouteGuard({ children }: Props) {
   // Redirect hook
   useEffect(
     function () {
-      if (isLoggedIn()) {
+      if (isLoggedIn) {
         if (usersRejected.includes(path)) {
           navigate("/app", { replace: true });
         }

@@ -1,4 +1,4 @@
-import { Box, Typography, Container, Link } from "@mui/material";
+import { Box, Typography, Container } from "@mui/material";
 export default function Footer() {
   return (
     // The Box is styled to be dark and span the full width
@@ -17,7 +17,15 @@ export default function Footer() {
       <Container maxWidth="lg">
         <Typography variant="body2" color="text.secondary" align="center">
           {"Copyright © "}
-          <Link color="inherit">ToDo list react</Link>
+          <Typography
+            sx={{
+              display: "inline",
+              textDecoration: "underline",
+            }}
+          >
+            ToDo list react
+          </Typography>
+          &nbsp;
           {new Date().getFullYear()}
         </Typography>
       </Container>

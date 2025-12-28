@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 
 import {
   Checkbox,
@@ -6,142 +6,79 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
-  Alert,
   IconButton,
   ListItem,
   LinearProgress,
   Box,
 } from "@mui/material";
 import PageWrapper from "../ui/PageWrapper";
-import CircularLoading from "../ui/CircularLoading";
+// import CircularLoading from "../ui/CircularLoading";
 
 import {
   useCreateTodoMutation,
   useDeleteTodoMutation,
-  useGetUserTodosMutation,
+  useGetUserTodosQuery,
   useUpdateTodoMutation,
 } from "../services/todo";
 
 import type { Todo } from "../types/todo";
 import Statistics from "../ui/Statistics";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  setLoading,
-  setTodos,
-  setError,
-  useTodos,
-} from "../features/todo/todoSlice";
-import { useDispatch } from "react-redux";
+
 import NewTodoForm from "../ui/NewTodoForm";
 
 import style from "../css/todo.module.css";
 
 export default function TodoPage() {
-  const todosState = useTodos();
-  const dispatch = useDispatch();
+  const { isLoading, data: todos } = useGetUserTodosQuery();
 
-  const [createTodo] = useCreateTodoMutation();
-  const [deleteTodo] = useDeleteTodoMutation();
-  const [getInitialTodos] = useGetUserTodosMutation();
+  const [createTodo, { isLoading: isCreating }] = useCreateTodoMutation();
+  const [updateTodo, { isLoading: isUpdating }] = useUpdateTodoMutation();
+  const [deleteTodo, { isLoading: isDeleting }] = useDeleteTodoMutation();
 
-  const [actionLoading, setActionLoading] = useState(false);
-
-  useEffect(
-    function () {
-      dispatch(setLoading(true));
-      getInitialTodos(undefined).then((res) => {
-        if (res.error) {
-          dispatch(setError(true, "Error loading user todos"));
-        }
-        dispatch(setTodos(res.data));
-        dispatch(setLoading(false));
-      });
-    },
-    [dispatch, getInitialTodos]
-  );
-
-  const [updateTodo] = useUpdateTodoMutation();
-
-  if (todosState.error) {
-    return (
-      <Alert variant="filled" severity="error">
-        {todosState.errorMessage}
-      </Alert>
-    );
-  }
-
-  const done = todosState.todos?.reduce(
+  const done = todos?.reduce(
     (acc: number, prev: Todo) => (acc += Number(prev.done)),
     0
   );
 
   const handleAddTodo = async function (task: string) {
-    const res = await createTodo({ task });
-    if (res.error) {
-      dispatch(setError(true, "Error adding todos"));
-      return;
-    }
-    dispatch(setTodos([res.data, ...todosState.todos]));
+    await createTodo({ task });
   };
 
   const handleTodoClick = async function (todo: Todo) {
-    setActionLoading(true);
-    const res = await updateTodo({
+    await updateTodo({
       id: todo.id!,
       todo: { done: !todo.done },
     });
-    if (res.error) {
-      dispatch(setError(true, "Error changing todo"));
-      return;
-    }
-
-    if (res.data?.id) {
-      dispatch(
-        setTodos(
-          todosState.todos.map((todo: Todo) => {
-            return todo.id === res.data.id ? res.data : todo;
-          })
-        )
-      );
-    }
-    setActionLoading(false);
   };
 
   const handleDeleteClick = async function (todo: Todo) {
-    setActionLoading(true);
-    const res = await deleteTodo(todo?.id as number);
-    if (res.error) {
-      dispatch(setError(true, "Error deleting todos"));
-      return;
-    }
-    dispatch(
-      setTodos(todosState.todos.filter((t: Todo) => t.id !== res.data?.id))
-    );
-    setActionLoading(false);
+    await deleteTodo(todo?.id as number);
   };
 
   return (
     <PageWrapper>
       <NewTodoForm
-        loading={todosState.loading}
+        creating={isCreating || isLoading}
         handleAddTodo={handleAddTodo}
-        setLoader={setActionLoading}
       />
-      {todosState.loading ? (
-        <CircularLoading />
+      {isLoading ? (
+        <LinearProgress />
       ) : (
         <Fragment>
           <Statistics
-            total={todosState.todos.length}
-            done={done}
-            todo={todosState.todos.length - done}
+            total={todos?.length as number}
+            done={done!}
+            todo={(todos?.length as number) - done!}
           />
 
           <Box className={style.loadContainer}>
-            {actionLoading && <LinearProgress className={style.progressBar} />}
+            {(isCreating || isUpdating || isDeleting) && (
+              <LinearProgress className={style.progressBar} />
+            )}
           </Box>
 
-          {todosState.todos.map((item: Todo, index: number, arr: Todo[]) => (
+          {todos?.map((item: Todo, index: number, arr: Todo[]) => (
             <ListItem
               secondaryAction={
                 <IconButton edge="end" onClick={() => handleDeleteClick(item)}>

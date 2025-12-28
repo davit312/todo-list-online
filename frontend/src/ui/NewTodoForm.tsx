@@ -1,13 +1,12 @@
 import { Box, Button, TextField } from "@mui/material";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useState } from "react";
 
 type Props = {
-  loading: boolean;
   handleAddTodo: (task: string) => Promise<void>;
-  setLoader: Dispatch<SetStateAction<boolean>>;
+  creating: boolean;
 };
 
-function NewTodoForm({ loading, handleAddTodo, setLoader }: Props) {
+function NewTodoForm({ handleAddTodo, creating }: Props) {
   const [newTask, setNewTask] = useState("");
 
   return (
@@ -16,10 +15,8 @@ function NewTodoForm({ loading, handleAddTodo, setLoader }: Props) {
       sx={{ display: "flex", width: "100%", p: 2 }}
       onSubmit={(e) => {
         e.preventDefault();
-        setLoader(true);
         handleAddTodo(newTask).finally(() => {
           setNewTask("");
-          setLoader(false);
         });
       }}
     >
@@ -32,7 +29,7 @@ function NewTodoForm({ loading, handleAddTodo, setLoader }: Props) {
       />
       <Button
         type="submit"
-        disabled={loading || newTask.length === 0}
+        disabled={creating || newTask.length === 0}
         variant="contained"
         sx={{ mr: -1 }}
       >

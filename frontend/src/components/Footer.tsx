@@ -18,6 +18,7 @@ export default function Footer() {
         <Typography variant="body2" color="text.secondary" align="center">
           {"Copyright © "}
           <Typography
+            component="span"
             sx={{
               display: "inline",
               textDecoration: "underline",
